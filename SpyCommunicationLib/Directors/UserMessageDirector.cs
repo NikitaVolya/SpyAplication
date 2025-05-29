@@ -27,11 +27,8 @@ namespace SpyCommunicationLib.Directors
         public SpyMessage GetLogginMessage(string username, string password)
         {
             _builder.SetAction(MessageAction.Login);
-            _builder.SetOptions(new Dictionary<string, string>
-            {
-                { "username", username },
-                { "password", password }
-            });
+            _builder.SetOption("username", username);
+            _builder.SetOption("password", password);
             return _builder.GetMessage();
         }
 
@@ -49,16 +46,13 @@ namespace SpyCommunicationLib.Directors
         /// <summary>
         /// Creates a message requesting records of a specified victim.
         /// </summary>
-        /// <param name="victim_id">Identifier of the victim.</param>
+        /// <param name="victim_ip">Ip of the victim.</param>
         /// <returns>SpyMessage to get victim records.</returns>
-        public SpyMessage GetVictimRecordsMessage(string victim_id)
+        public SpyMessage GetVictimRecordsMessage(string victim_ip)
         {
             _builder.SetAction(MessageAction.GetVictimRecords);
             ConfigureToken(_builder);
-            _builder.SetOptions(new Dictionary<string, string>
-            {
-                { "victim_id", victim_id }
-            });
+            _builder.SetOption("vicrim_ip", victim_ip);
             return _builder.GetMessage();
         }
 
@@ -71,10 +65,7 @@ namespace SpyCommunicationLib.Directors
         {
             _builder.SetAction(MessageAction.ChangePassword);
             ConfigureToken(_builder);
-            _builder.SetOptions(new Dictionary<string, string>
-            {
-                { "new_password", new_password }
-            });
+            _builder.SetOption("new_password", new_password);
             return _builder.GetMessage();
         }
 
