@@ -63,6 +63,11 @@
                 _message.Add(option.Key, option.Value);
         }
 
+        public void SetOption(string key, string value)
+        {
+            _message.Add(key, value);
+        }
+
         /// <summary>
         /// Returns the built message and resets the builder for reuse.
         /// </summary>
