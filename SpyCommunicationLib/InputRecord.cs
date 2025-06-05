@@ -13,8 +13,10 @@ namespace SpyCommunicationLib
         private Thread _inputThread;
         private readonly object _lock = new object();
 
+        // Indicates whether the input capturing thread is currently running
         public bool IsWorking => _working;
 
+        // Starts the background thread to capture key inputs if it's not already running
         public void Run()
         {
             if (_working) return;
@@ -25,12 +27,14 @@ namespace SpyCommunicationLib
             _inputThread.Start();
         }
 
+        // Stops the input capturing thread and waits for it to finish
         public void Stop()
         {
             _working = false;
             _inputThread?.Join();
         }
 
+        // Returns a thread-safe copy of the captured input keys as integers
         public IEnumerable<int> GetInputs()
         {
             lock (_lock)
@@ -39,6 +43,7 @@ namespace SpyCommunicationLib
             }
         }
 
+        // Clears the list of captured input keys in a thread-safe manner
         public void ClearInputs()
         {
             lock (_lock)
@@ -47,6 +52,7 @@ namespace SpyCommunicationLib
             }
         }
 
+        // Continuously captures unique key presses and stores them while the thread is active
         private void CaptureInputs()
         {
             HashSet<ConsoleKey> pressedKeys = new HashSet<ConsoleKey>();
