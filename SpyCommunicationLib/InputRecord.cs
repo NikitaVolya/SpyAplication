@@ -31,11 +31,11 @@ namespace SpyCommunicationLib
             _inputThread?.Join();
         }
 
-        public IEnumerator<int> GetInputs()
+        public IEnumerable<int> GetInputs()
         {
             lock (_lock)
             {
-                return new List<int>(_inputs).GetEnumerator();
+                return new List<int>(_inputs);
             }
         }
 
@@ -49,17 +49,29 @@ namespace SpyCommunicationLib
 
         private void CaptureInputs()
         {
+            HashSet<ConsoleKey> pressedKeys = new HashSet<ConsoleKey>();
+
             while (_working)
             {
                 if (Console.KeyAvailable)
                 {
-                    var key = Console.ReadKey(intercept: true);
+                    var key = Console.ReadKey(intercept: true).Key;
+
                     lock (_lock)
                     {
-                        _inputs.Add((int)key.Key);
+                        if (!pressedKeys.Contains(key))
+                        {
+                            _inputs.Add((int)key);
+                            pressedKeys.Add(key);
+                        }
                     }
                 }
-                Thread.Sleep(10); // зменшує навантаження на CPU
+                else
+                {
+                    pressedKeys.Clear();
+                }
+
+                Thread.Sleep(10);
             }
         }
     }
