@@ -32,7 +32,7 @@
             textBox1 = new TextBox();
             textBox2 = new TextBox();
             logInBtn = new Button();
-            label2 = new Label();
+            resultLabel = new Label();
             label3 = new Label();
             label4 = new Label();
             SuspendLayout();
@@ -46,7 +46,6 @@
             label1.Size = new Size(123, 50);
             label1.TabIndex = 0;
             label1.Text = "Log in";
-            label1.Click += label1_Click;
             // 
             // textBox1
             // 
@@ -72,14 +71,14 @@
             logInBtn.UseVisualStyleBackColor = true;
             logInBtn.Click += logInBtn_Click;
             // 
-            // label2
+            // resultLabel
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(426, 353);
-            label2.Name = "label2";
-            label2.Size = new Size(50, 20);
-            label2.TabIndex = 4;
-            label2.Text = "label2";
+            resultLabel.AutoSize = true;
+            resultLabel.Location = new Point(426, 353);
+            resultLabel.Name = "resultLabel";
+            resultLabel.Size = new Size(12, 20);
+            resultLabel.TabIndex = 4;
+            resultLabel.Text = ".";
             // 
             // label3
             // 
@@ -98,7 +97,6 @@
             label4.Size = new Size(73, 20);
             label4.TabIndex = 6;
             label4.Text = "Password:";
-            label4.Click += label4_Click;
             // 
             // LoginForm
             // 
@@ -107,7 +105,7 @@
             ClientSize = new Size(800, 450);
             Controls.Add(label4);
             Controls.Add(label3);
-            Controls.Add(label2);
+            Controls.Add(resultLabel);
             Controls.Add(logInBtn);
             Controls.Add(textBox2);
             Controls.Add(textBox1);
@@ -124,7 +122,7 @@
         private TextBox textBox1;
         private TextBox textBox2;
         private Button logInBtn;
-        private Label label2;
+        private Label resultLabel;
         private Label label3;
         private Label label4;
     }

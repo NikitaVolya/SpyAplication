@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace ClientInterface
+﻿namespace ClientInterface
 {
     public partial class LoginForm : Form
     {
@@ -20,36 +9,34 @@ namespace ClientInterface
 
         private void logInBtn_Click(object sender, EventArgs e)
         {
-            string username = textBox1.Text;
-            string password = textBox2.Text;
+            string username = textBox1.Text.Trim();
+            string password = textBox2.Text.Trim();
 
-            if (username == "admin" && password == "1234")
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
-                label2.ForeColor = Color.Green;
-                label2.Text = "Successfully logged in!";
+                resultLabel.ForeColor = Color.OrangeRed;
+                resultLabel.Text = "Enter username and password!";
+                return;
+            }
+
+            if (IsValidUser(username, password))
+            {
+                resultLabel.ForeColor = Color.Green;
+                resultLabel.Text = "Successfully logged in!";
                 new MainForm().Show();
                 this.Hide();
             }
-            else if (username == "" || password == "")
-            {
-                label2.ForeColor = Color.OrangeRed;
-                label2.Text = "Enter username and password!";
-            }
             else
             {
-                label2.ForeColor = Color.Red;
-                label2.Text = "Incorrect username or password!";
+                resultLabel.ForeColor = Color.Red;
+                resultLabel.Text = "Incorrect username or password!";
             }
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private bool IsValidUser(string username, string password)
         {
-
+            return username == "admin" && password == "1234";
         }
 
-        private void label4_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

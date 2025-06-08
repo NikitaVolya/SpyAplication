@@ -11,9 +11,9 @@
             exitMenuItem.Click += exitToolStripMenuItem_Click;
             menuStrip.Items.Add(exitMenuItem);
 
-            var tabControl = new TabControl();
-            tabControl.Dock = DockStyle.Fill;
-            tabControl.TabPages.Add(new UsersTabPage());
+            var mainMenuTabControl = new TabControl();
+            mainMenuTabControl.Dock = DockStyle.Fill;
+            mainMenuTabControl.TabPages.Add(new UsersTabPage());
 
             var layout = new TableLayoutPanel
             {
@@ -25,7 +25,7 @@
             layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
 
             layout.Controls.Add(menuStrip, 0, 0);
-            layout.Controls.Add(tabControl, 0, 1);
+            layout.Controls.Add(mainMenuTabControl, 0, 1);
 
             this.Controls.Add(layout);
             this.MainMenuStrip = menuStrip;

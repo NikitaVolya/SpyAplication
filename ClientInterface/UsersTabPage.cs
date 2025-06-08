@@ -14,30 +14,30 @@
         {
             InitializeComponent();
             this.Text = "Users";
-            listBox1.Items.Clear();
-            listBox2.Items.Clear();
+            usersListBox.Items.Clear();
+            searchResultsListBox.Items.Clear();
             foreach (var user in users)
             {
-                listBox1.Items.Add(user);
+                usersListBox.Items.Add(user);
             }
         }
 
         private void refreshBtn_Click(object sender, EventArgs e)
         {
-            listBox1.Items.Clear();
+            usersListBox.Items.Clear();
 
             foreach (var user in users)
             {
-                listBox1.Items.Add(user);
+                usersListBox.Items.Add(user);
             }
 
-            listBox2.Items.Clear();
+            searchResultsListBox.Items.Clear();
         }
 
         private void searchBtn_Click(object sender, EventArgs e)
         {
             string query = textBox1.Text.Trim().ToLower();
-            listBox2.Items.Clear();
+            searchResultsListBox.Items.Clear();
 
             if (string.IsNullOrWhiteSpace(query))
             {
@@ -49,13 +49,14 @@
 
             if (results.Count == 0)
             {
-                listBox2.Items.Add("Noting found.");
+                MessageBox.Show("Nothing found.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                searchResultsListBox.Items.Clear();
             }
             else
             {
                 foreach (var user in results)
                 {
-                    listBox2.Items.Add(user);
+                    searchResultsListBox.Items.Add(user);
                 }
             }
         }
