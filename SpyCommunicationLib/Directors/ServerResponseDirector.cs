@@ -62,7 +62,6 @@ namespace SpyCommunicationLib.Directors
         {
             SpyResponseBuilder<object> builder = new SpyResponseBuilder<object>();
             builder.SetResponseCode(ResponseCode.Success);
-            builder.SetContent(new { jwt = token });
             return builder.GetResponse();
         }
 
