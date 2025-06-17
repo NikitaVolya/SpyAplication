@@ -2,6 +2,7 @@
 using SpyCommunicationLib;
 using SpyCommunicationLib.Directors;
 using SpyCommunicationLib.Entities;
+using System.Net;
 
 
 namespace Server.Handlers
@@ -43,7 +44,7 @@ namespace Server.Handlers
             return _director.GetVictimRecordsResponse(records).ToString();
         }
 
-        public async Task<string> HandleAsync(SpyMessage? message)
+        public async Task<string> HandleAsync(SpyMessage? message, EndPoint endPoint)
         {
             if (message == null)
                 return _director.GetBadRequestResponse().ToString();
