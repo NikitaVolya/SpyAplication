@@ -18,8 +18,9 @@ namespace Server.Handlers
             return message._sender == Sender.User;
         }
 
-        private async Task<string> GetVictimList()
+        private async Task<string> GetVictimIpList()
         {
+            // Add connection to DB for get data
             List<string> ip_list = new List<string>()
             {
                 "127.0.0.1", "123.2.1.0"
@@ -29,6 +30,7 @@ namespace Server.Handlers
 
         private async Task<string> GetVictimRecords(string victimIp)
         {
+            // Add connection to DB for get data
             List<VictimRecord> records = new List<VictimRecord>() { 
                 new VictimRecord{
                     Id = 1,
@@ -43,12 +45,15 @@ namespace Server.Handlers
 
         public async Task<string> HandleAsync(SpyMessage? message)
         {
+            if (message == null)
+                return _director.GetBadRequestResponse().ToString();
+
             string response;
 
             switch (message.Action)
             {
                 case MessageAction.GetVictimsIpList:
-                    response = await GetVictimList();
+                    response = await GetVictimIpList();
                     break;
                 case MessageAction.GetVictimRecords:
                     string victimIp = message.GetOption("victim_ip");

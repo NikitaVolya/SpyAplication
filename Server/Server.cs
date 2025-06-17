@@ -16,6 +16,7 @@ namespace Server
         {
             _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), _port);
             _handlers = new HandlersContainer();
+            _handlers.AddHandler(new UserHandler());
         }
 
         public void Run()
