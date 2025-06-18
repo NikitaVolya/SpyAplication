@@ -11,7 +11,7 @@ namespace SpyCommunicationLib
         /// <summary>
         /// Internal representation of a message for deserialization.
         /// </summary>
-        private record MessageRecord(string? Token, MessageAction Action, Sender Sender, Dictionary<string, string> Options);
+        private record MessageRecord(MessageAction Action, Sender Sender, Dictionary<string, string> Options);
 
         /// <summary>
         /// Serializes a SpyMessage to a JSON string.
@@ -36,19 +36,19 @@ namespace SpyCommunicationLib
         public static SpyMessage? DeserializeMessage(string json)
         {
             if (string.IsNullOrEmpty(json))
-            {
-                throw new ArgumentException("JSON string cannot be null or empty", nameof(json));
-            }
+                return null;
 
-            MessageRecord? record = JsonSerializer.Deserialize<MessageRecord>(json);
-            if (record == null)
+            MessageRecord record;
+            try
+            {
+                record = JsonSerializer.Deserialize<MessageRecord>(json);
+            } catch
             {
                 return null;
             }
 
             SpyMessage message = new SpyMessage
             {
-                Token = record.Token,
                 Action = record.Action,
                 Sender = record.Sender
             };
