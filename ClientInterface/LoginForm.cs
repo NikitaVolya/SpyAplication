@@ -23,8 +23,9 @@
             {
                 resultLabel.ForeColor = Color.Green;
                 resultLabel.Text = "Successfully logged in!";
-                new MainForm().Show();
                 this.Hide();
+                new MainForm().ShowDialog();
+                this.Show();
             }
             else
             {
