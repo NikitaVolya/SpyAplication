@@ -1,5 +1,4 @@
 ﻿using SpyCommunicationLib;
-using System.Net;
 
 namespace Server.Handlers
 {
@@ -7,6 +6,6 @@ namespace Server.Handlers
     {
         public bool CheckConditions(SpyMessage? message);
 
-        public Task<string> HandleAsync(SpyMessage? message, EndPoint endPoint);
+        public Task<string> HandleAsync(SpyMessage? message, ClientInfo clientInfo);
     }
 }

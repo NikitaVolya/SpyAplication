@@ -17,15 +17,14 @@ namespace Server.Handlers
             _handlers.Add(handler);
         }
 
-        public async Task<string> WorkAsync(SpyMessage? message)
+        public async Task<string> WorkAsync(SpyMessage? message, ClientInfo clientInfo)
         {
-            Console.WriteLine(message?.ToString());
 
             foreach (var handler in _handlers)
             {
                 if (!handler.CheckConditions(message))
                     continue;
-                return await handler.HandleAsync(message);
+                return await handler.HandleAsync(message, clientInfo);
             }
 
             ServerResponseDirector director = new ServerResponseDirector();

