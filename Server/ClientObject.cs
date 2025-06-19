@@ -1,7 +1,6 @@
 ﻿
 using Server.Handlers;
 using SpyCommunicationLib;
-using SpyCommunicationLib.Directors;
 using System.Net.Sockets;
 using System.Text;
 
@@ -10,18 +9,20 @@ namespace Server
     internal class ClientObject
     {
         private TcpClient _client;
+        private readonly Logger _logger;
         private readonly HandlersContainer _handlers;
 
         private ClientInfo _clientInfo;
 
 
-        public ClientObject(TcpClient client, HandlersContainer handlers)
+        public ClientObject(TcpClient client, HandlersContainer handlers, Logger logger)
         {
             if (client  == null) 
                 throw new ArgumentNullException("client");
 
             _client = client;
             _handlers = handlers;
+            _logger = logger;
             _clientInfo = new ClientInfo(client.Client.RemoteEndPoint);
         }
 
@@ -41,7 +42,6 @@ namespace Server
 
         private static async Task SendStream(NetworkStream stream, byte[] data, string text)
         {
-            Console.WriteLine("Send ", text);
             data = Encoding.Unicode.GetBytes(text);
             await stream.WriteAsync(data, 0, data.Length);
         }
@@ -62,24 +62,25 @@ namespace Server
 
                 while (true)
                 {
+
                     message = await ReadStream(stream, buffer);
                     SpyMessage? messageObject = SpySerializer.DeserializeMessage(message);
 
-                    Console.WriteLine("Request {0} : {1}", _clientInfo.RemoteEndPoint, messageObject);
+                    _logger.Log(_clientInfo.RemoteEndPoint ?? "nan", messageObject?.Action.ToString() ?? "Unknown command", _clientInfo.Login ?? "guest");
 
                     response = await ServerLogic(messageObject);
-
                     await SendStream(stream, buffer, response);
                 }
             }
             catch (Exception ex)
             {
-                // Add log if error
+                _logger.Log(_clientInfo.RemoteEndPoint ?? "nan", ex.ToString(), _clientInfo.Login ?? "guest");
             }
             finally
             {
                 stream?.Close();
                 _client?.Close();
+                _logger.Log(_clientInfo.RemoteEndPoint ?? "nan", "close connection", _clientInfo.Login ?? "guest");
             }
         }
     }
