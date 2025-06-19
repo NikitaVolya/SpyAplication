@@ -29,7 +29,7 @@ namespace ClientInterface
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[Client]: Connection error: {ex.Message}");
+                Console.WriteLine($"[Client] Connection error: {ex.Message}");
                 return false;
             }
         }
@@ -46,7 +46,7 @@ namespace ClientInterface
 
             if (result == null || result.Code != ResponseCode.Success)
             {
-                Console.WriteLine($"[Client]: Login failed. Code: {(int?)result?.Code}, Content: {result?.Content}");
+                Console.WriteLine($"[Client] Login failed. Code: {(int?)result?.Code}, Content: {result?.Content}");
                 return null;
             }
 
@@ -65,7 +65,7 @@ namespace ClientInterface
 
             if (result == null || result.Code != ResponseCode.Success)
             {
-                Console.WriteLine($"[Client]: Failed to get victim IP list. Code: {(int?)result?.Code}, Content: {result?.Content}");
+                Console.WriteLine($"[Client] Failed to get victim IP list. Code: {(int?)result?.Code}, Content: {result?.Content}");
                 return null;
             }
 
@@ -84,7 +84,7 @@ namespace ClientInterface
 
             if (result == null || result.Code != ResponseCode.Success)
             {
-                Console.WriteLine($"[Client]: Failed to get records for {victimIp}. Code: {(int?)result?.Code}, Content: {result?.Content}");
+                Console.WriteLine($"[Client] Failed to get records for {victimIp}. Code: {(int?)result?.Code}, Content: {result?.Content}");
                 return null;
             }
 
