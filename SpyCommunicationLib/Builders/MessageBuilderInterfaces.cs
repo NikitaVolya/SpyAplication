@@ -30,16 +30,4 @@ namespace SpyCommunicationLib.Builders
         /// <returns>The built SpyMessage.</returns>
         SpyMessage GetMessage();
     }
-
-    /// <summary>
-    /// Extends a builder with token setting capabilities.
-    /// </summary>
-    public interface ITokenMessageBuilder
-    {
-        /// <summary>
-        /// Sets the token for the message.
-        /// </summary>
-        /// <param name="token">The authentication token.</param>
-        void SetToken(string token);
-    }
 }
