@@ -22,12 +22,53 @@ namespace Server
             _logger = new Logger("logs.txt", true);
         }
 
+        private void StartTerminalMenu()
+        {
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    ConsoleKeyInfo input_key = Console.ReadKey();
+                    if (input_key.Key != ConsoleKey.Enter)
+                        continue;
+                    Console.WriteLine("Hello admin!");
+                    _logger.DisableConsoleOutput();
+
+                    bool terminalWork = true;
+                    while (terminalWork)
+                    {
+                        Console.Write(": ");
+                        string? input = Console.ReadLine();
+                        if (input == null)
+                            continue;
+
+                        switch (input)
+                        {
+                            case "help":
+                                Console.WriteLine("");
+                                break;
+                            case "exit":
+                                terminalWork = false;
+                                break;
+                            default:
+                                Console.WriteLine("Inknown command! Exter help to get commands list");
+                                break;
+                        }
+
+
+                    }
+                    _logger.EnableConsoleOutput();
+                }
+            });
+        }
+
         public void Run()
         {
             try
             {
+                StartTerminalMenu();
                 _listener.Start();
-                Console.WriteLine("Wait for connection...");
+                Console.WriteLine("Wait for connection (type Enter for activate server interface)...");
 
                 while (true)
                 {
