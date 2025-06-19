@@ -65,7 +65,7 @@ namespace Server
 
                     message = await ReadStream(stream, buffer);
                     SpyMessage? messageObject = SpySerializer.DeserializeMessage(message);
-
+                    Console.WriteLine(messageObject);
                     _logger.Log(_clientInfo.RemoteEndPoint ?? "nan", messageObject?.Action.ToString() ?? "Unknown command", _clientInfo.Login ?? "guest");
 
                     response = await ServerLogic(messageObject);

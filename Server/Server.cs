@@ -1,6 +1,7 @@
 ﻿using System.Net.Sockets;
 using System.Net;
 using Server.Handlers;
+using Server.Data;
 
 namespace Server
 {
@@ -16,10 +17,14 @@ namespace Server
         public Server()
         {
             _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), _port);
-            _handlers = new HandlersContainer();
-            _handlers.AddHandler(new UserHandler());
 
             _logger = new Logger("logs.txt", true);
+
+            _handlers = new HandlersContainer();
+            _handlers.AddHandler(new UserHandler());
+            _handlers.AddHandler(new SpyHandler());
+
+            UsersContainer.AddUser("root", "root");
         }
 
         private void StartTerminalMenu()
