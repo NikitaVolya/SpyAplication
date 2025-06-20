@@ -95,6 +95,7 @@ namespace Server.Data
             return _records
                 .AsParallel()
                 .Where(r => r.Ip == ip)
+                .Select(r => (RecordData)r.Clone())
                 .ToList();
         }
     }

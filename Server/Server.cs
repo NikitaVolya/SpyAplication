@@ -64,6 +64,7 @@ namespace Server
                     }
                     _logger.EnableConsoleOutput();
                 }
+                Thread.Sleep(1000);
             });
         }
 

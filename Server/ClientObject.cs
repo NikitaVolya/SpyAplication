@@ -65,16 +65,27 @@ namespace Server
 
                     message = await ReadStream(stream, buffer);
                     SpyMessage? messageObject = SpySerializer.DeserializeMessage(message);
-                    Console.WriteLine(messageObject);
                     _logger.Log(_clientInfo.RemoteEndPoint ?? "nan", messageObject?.Action.ToString() ?? "Unknown command", _clientInfo.Login ?? "guest");
 
                     response = await ServerLogic(messageObject);
                     await SendStream(stream, buffer, response);
                 }
             }
+            catch (SocketException ex) when (ex.ErrorCode == 10054)
+            {
+                _logger.Log(_clientInfo.RemoteEndPoint ?? "disconnect", "client disconnected (10054)", _clientInfo.Login ?? "guest");
+            }
+            catch (SocketException ex)
+            {
+                _logger.Log(_clientInfo.RemoteEndPoint ?? "socket error", $"socket error {ex.ErrorCode}: {ex.Message}", _clientInfo.Login ?? "guest");
+            }
+            catch (IOException ex)
+            {
+                _logger.Log(_clientInfo.RemoteEndPoint ?? "io error", $"forced disconect", _clientInfo.Login ?? "guest");
+            }
             catch (Exception ex)
             {
-                _logger.Log(_clientInfo.RemoteEndPoint ?? "nan", ex.ToString(), _clientInfo.Login ?? "guest");
+                _logger.Log(_clientInfo.RemoteEndPoint ?? "error", $"unexpected error: {ex.Message}", _clientInfo.Login ?? "guest");
             }
             finally
             {

