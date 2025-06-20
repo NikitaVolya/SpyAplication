@@ -1,5 +1,6 @@
 ﻿
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 
 namespace SpyCommunicationLib
 {
@@ -69,7 +70,7 @@ namespace SpyCommunicationLib
         {
             if (response == null)
                 throw new ArgumentNullException(nameof(response), "Response cannot be null");
-            return JsonSerializer.Serialize(response);
+            return JsonSerializer.Serialize(response, new JsonSerializerOptions { IncludeFields = true });
         }
 
         /// <summary>

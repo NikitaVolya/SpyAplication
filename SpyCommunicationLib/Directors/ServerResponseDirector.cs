@@ -86,7 +86,7 @@ namespace SpyCommunicationLib.Directors
             SpyResponseBuilder<IEnumerable<string>> _builder = new SpyResponseBuilder<IEnumerable<string>>();
             _builder.SetResponseCode(ResponseCode.Success);
             _builder.SetContent(victims_ip);
-            return _builder.GetResponse();
+            return _builder.GetResponse(); ;
         }
 
         /// <summary>
