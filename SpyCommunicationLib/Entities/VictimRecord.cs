@@ -19,7 +19,7 @@ namespace SpyCommunicationLib.Entities
         /// <summary>
         /// Gets or sets the inputs of record.
         /// </summary>
-        public int Kyes { get; set; }
+        public int[] Kyes { get; set; }
 
         /// <summary>
         /// Gets or sets the date and time when the record was created.
