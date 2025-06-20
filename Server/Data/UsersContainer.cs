@@ -2,10 +2,19 @@
 
 namespace Server.Data
 {
-    class UserData
+    class UserData : ICloneable
     {
         public string? Username;
         public string? Password;
+
+        public object Clone()
+        {
+            return new UserData
+            {
+                Username = this.Username,
+                Password = this.Password
+            };
+        }
     }
 
     class UsersContainer
@@ -20,6 +29,11 @@ namespace Server.Data
                 .AsParallel()
                 .Where(u => u.Username == username)
                 .FirstOrDefault();
+        }
+
+        public static List<UserData> GetUsersList()
+        {
+            return _users.AsParallel().Select(u => (UserData)u.Clone()).ToList();
         }
 
         public static bool UserExiste(string username)

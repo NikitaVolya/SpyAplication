@@ -69,6 +69,7 @@ namespace Server
 
         public void Run()
         {
+            TcpClient client = null;
             try
             {
                 StartTerminalMenu();
@@ -77,7 +78,7 @@ namespace Server
 
                 while (true)
                 {
-                    TcpClient client = _listener.AcceptTcpClient();
+                    client = _listener.AcceptTcpClient();
                     _logger.Log("connection", client.Client.RemoteEndPoint?.ToString(), "");
                     Task.Run(async () => {
                         ClientObject clientObject = new ClientObject(client, _handlers, _logger);
@@ -87,7 +88,7 @@ namespace Server
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                _logger.Log(ex.ToString(), client.Client.RemoteEndPoint?.ToString(), "");
             }
             finally
             {

