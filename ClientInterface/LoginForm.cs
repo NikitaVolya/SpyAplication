@@ -1,13 +1,21 @@
-﻿namespace ClientInterface
+﻿using SpyCommunicationLib;
+using System.Drawing;
+using System.Threading.Tasks;
+
+namespace ClientInterface
 {
     public partial class LoginForm : Form
     {
+        private readonly ClientService _clientService = new ClientService();
+
         public LoginForm()
         {
             InitializeComponent();
+            textBox1.Text = "admin";
+            textBox2.Text = "admin123";
         }
 
-        private void logInBtn_Click(object sender, EventArgs e)
+        private async void logInBtn_Click(object sender, EventArgs e)
         {
             string username = textBox1.Text.Trim();
             string password = textBox2.Text.Trim();
@@ -19,12 +27,12 @@
                 return;
             }
 
-            if (IsValidUser(username, password))
+            if (username == "admin" && password == "admin123")
             {
                 resultLabel.ForeColor = Color.Green;
                 resultLabel.Text = "Successfully logged in!";
                 this.Hide();
-                new MainForm().ShowDialog();
+                new WorkForm(this, _clientService).ShowDialog();
                 this.Show();
             }
             else
@@ -33,11 +41,5 @@
                 resultLabel.Text = "Incorrect username or password!";
             }
         }
-
-        private bool IsValidUser(string username, string password)
-        {
-            return username == "admin" && password == "1234";
-        }
-
     }
 }
