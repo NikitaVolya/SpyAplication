@@ -22,18 +22,19 @@ namespace Server.Data
         private static List<UserData> _users = new List<UserData>();
         private static object _locker = new();
 
-
-        private static UserData? GetUserOrDefault(string username)
+        public static UserData? GetUserOrDefault(string username)
         {
-            return _users
-                .AsParallel()
-                .Where(u => u.Username == username)
-                .FirstOrDefault();
+            lock (_locker)
+                return _users
+                    .AsParallel()
+                    .Where(u => u.Username == username)
+                    .FirstOrDefault();
         }
 
         public static List<UserData> GetUsersList()
         {
-            return _users.AsParallel().Select(u => (UserData)u.Clone()).ToList();
+            lock (_locker)
+                return _users.AsParallel().Select(u => (UserData)u.Clone()).ToList();
         }
 
         public static bool UserExiste(string username)
@@ -41,16 +42,27 @@ namespace Server.Data
             return GetUserOrDefault(username) != null;
         }
 
-        public static bool AddUser(string username, string password)
+        public static async Task<bool> AddUser(string username, string password)
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            return await AddUser(new UserData
+            {
+                Username = username,
+                Password = password
+            });
+        }
+
+        public static async Task<bool> AddUser(UserData userData)
+        {
+            if (string.IsNullOrEmpty(userData.Username) || string.IsNullOrEmpty(userData.Password))
                 return false;
 
-            if (UserExiste(username))
+            if (UserExiste(userData.Username))
                 return false;
 
             lock (_locker)
-                _users.Add(new UserData {Username = username, Password = password});
+                _users.Add(userData);
+
+            await DataWriterReader.SaveUsersToFile();
 
             return true;
         }

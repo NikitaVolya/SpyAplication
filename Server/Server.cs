@@ -24,7 +24,7 @@ namespace Server
             _handlers.AddHandler(new UserHandler());
             _handlers.AddHandler(new SpyHandler());
 
-            UsersContainer.AddUser("root", "root");
+            UsersContainer.AddUser("nikita", "1234");
         }
 
         private void StartTerminalMenu()
@@ -64,7 +64,6 @@ namespace Server
                     }
                     _logger.EnableConsoleOutput();
                 }
-                Thread.Sleep(1000);
             });
         }
 
@@ -74,6 +73,7 @@ namespace Server
             try
             {
                 StartTerminalMenu();
+
                 _listener.Start();
                 Console.WriteLine("Wait for connection (type Enter for activate server interface)...");
 
