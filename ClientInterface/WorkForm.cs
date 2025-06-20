@@ -1,23 +1,30 @@
-﻿using System;
+﻿using SpyCommunicationLib;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ClientInterface
 {
-    public partial class Form2 : Form
+    public partial class WorkForm : Form
     {
-        private List<string> allVictims = new List<string>
-        {
-            "192.168.0.2",
-            "192.168.0.3",
-            "10.0.0.5"
-        };
+        private readonly LoginForm _loginForm;
+        private readonly ClientService _clientService;
+        private List<string> allVictims = new List<string>();
 
-        public Form2()
+        public WorkForm(LoginForm loginForm, ClientService clientService)
         {
             InitializeComponent();
-
+            _loginForm = loginForm;
+            _clientService = clientService;
+            InitializeMenu();
+            allVictims = new List<string>
+            {
+                "192.168.1.1",
+                "192.168.1.2",
+                "192.168.1.3",
+                "10.0.0.1",
+                "10.0.0.2"
+            };
             LoadVictims();
             button3.Visible = false;
 
@@ -26,6 +33,26 @@ namespace ClientInterface
             button2.Click += button2_Click;
             button1.Click += button1_Click;
             button3.Click += button3_Click;
+        }
+
+        private void InitializeMenu()
+        {
+            MenuStrip menuStrip = new MenuStrip();
+            ToolStripMenuItem fileMenu = new ToolStripMenuItem("File");
+            ToolStripMenuItem logoutMenuItem = new ToolStripMenuItem("Logout");
+            logoutMenuItem.Click += LogoutMenuItem_Click;
+
+            fileMenu.DropDownItems.Add(logoutMenuItem);
+            menuStrip.Items.Add(fileMenu);
+
+            this.Controls.Add(menuStrip);
+            this.MainMenuStrip = menuStrip;
+        }
+
+        private void LogoutMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            _loginForm.Show();
         }
 
         private void LoadVictims()
