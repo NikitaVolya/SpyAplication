@@ -14,23 +14,57 @@ namespace Server.Data
 
             string json = JsonSerializer.Serialize(users, new JsonSerializerOptions { IncludeFields = true });
             await File.WriteAllTextAsync(filename, json);
-
-            Console.WriteLine(json);
         }
 
-        public static async Task LoadUsers(string filename = "users.json")
+        private static async Task<string?> LoadFromFile(string filename)
         {
-            List<UserData> users;
-
-            string json = await File.ReadAllTextAsync(filename);
-
-            users = JsonSerializer.Deserialize<List<UserData>>(json, new JsonSerializerOptions { IncludeFields = true }) ?? new List<UserData>();
-
-            users.AsParallel().ForAll(user =>
+            if (!File.Exists(filename))
             {
-                UsersContainer.AddUser(user);
+                Console.WriteLine($"File {filename} not found, creating a new one.");
+                return null;
+            }
+            return await File.ReadAllTextAsync(filename);
+        }
+
+        public static async Task SaveRecordsToFile(string filename = "records.json")
+        {
+            List<RecordData> records = RecordsContainer.GetRecordsList();
+
+            string json = JsonSerializer.Serialize(records, new JsonSerializerOptions { IncludeFields = true });
+            await File.WriteAllTextAsync(filename, json);
+        }
+
+        public static async Task LoadUsersAsync(string filename = "users.json")
+        {
+
+            string? json = await LoadFromFile(filename);
+            if (json == null || json == string.Empty)
+                return;
+
+            List<UserData> users = JsonSerializer.Deserialize<List<UserData>>(json, new JsonSerializerOptions { IncludeFields = true }) ?? new List<UserData>();
+
+            users
+            .AsParallel()
+            .ForAll(async user =>
+            {
+                await UsersContainer.AddUserAsync(user);
             });
         }
 
+        public static async Task LoadRecordsAsync(string filename = "records.json")
+        {
+            string? json = await LoadFromFile(filename);
+            if (json == null || json == string.Empty)
+                return;
+
+            List<RecordData> records = JsonSerializer.Deserialize<List<RecordData>>(json, new JsonSerializerOptions { IncludeFields = true }) ?? new List<RecordData>();
+
+            records
+                .AsParallel()
+                .ForAll(async record =>
+                {
+                    await RecordsContainer.AddRecordAsync(record);
+                });
+        }
     }
 }

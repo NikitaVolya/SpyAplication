@@ -42,16 +42,16 @@ namespace Server.Data
             return GetUserOrDefault(username) != null;
         }
 
-        public static async Task<bool> AddUser(string username, string password)
+        public static async Task<bool> AddUserAsync(string username, string password)
         {
-            return await AddUser(new UserData
+            return await AddUserAsync(new UserData
             {
                 Username = username,
                 Password = password
             });
         }
 
-        public static async Task<bool> AddUser(UserData userData)
+        public static async Task<bool> AddUserAsync(UserData userData)
         {
             if (string.IsNullOrEmpty(userData.Username) || string.IsNullOrEmpty(userData.Password))
                 return false;

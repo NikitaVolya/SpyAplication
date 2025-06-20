@@ -1,4 +1,5 @@
-﻿using SpyCommunicationLib;
+﻿using Server.Data;
+using SpyCommunicationLib;
 using SpyCommunicationLib.Directors;
 using System.Net;
 
@@ -30,7 +31,7 @@ namespace Server.Handlers
                 .Where(key => key != -1)
                 .ToArray();
 
-            Data.RecordsContainer.AddRecord(keys, ip);
+            await RecordsContainer.AddRecordAsync(keys, ip);
 
             return _director.GetSuccessResponse().ToString();
         }

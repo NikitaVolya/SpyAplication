@@ -24,7 +24,10 @@ namespace Server
             _handlers.AddHandler(new UserHandler());
             _handlers.AddHandler(new SpyHandler());
 
-            UsersContainer.AddUser("nikita", "1234");
+            Task.Run(async () => {
+                await DataWriterReader.LoadUsersAsync("users.json");
+                await DataWriterReader.LoadRecordsAsync("records.json");
+            });
         }
 
         private void StartTerminalMenu()

