@@ -22,7 +22,7 @@ namespace SpyCommunicationLib
     public class SpyResponse<T> where T : class
     {
         private ResponseCode _code;
-        private T? _content;
+        public T? Content { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the SpyResponse class with default values.
@@ -30,7 +30,7 @@ namespace SpyCommunicationLib
         public SpyResponse()
         {
             _code = ResponseCode.Empty;
-            _content = null;
+            Content = null;
         }
 
         /// <summary>
@@ -48,25 +48,11 @@ namespace SpyCommunicationLib
         }
 
         /// <summary>
-        /// Gets or sets the response content.
-        /// </summary>
-        public T? Content
-        {
-            get => _content;
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException(nameof(value), "Content cannot be null.");
-                _content = value;
-            }
-        }
-
-        /// <summary>
         /// Returns the serialized string representation of the response.
         /// </summary>
         public override string ToString()
         {
-            return SpySerializer.SerializeResponse(this);
+            return SpySerializer.SerializeResponse<T>(this);
         }
     }
 }
