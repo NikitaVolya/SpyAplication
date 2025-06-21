@@ -5,6 +5,7 @@ using Server.Data;
 
 namespace Server
 {
+
     internal class Server
     {
 
@@ -13,6 +14,10 @@ namespace Server
         private Logger _logger;
 
         private HandlersContainer _handlers;
+        private ServerCommandLine.ServerCommandLine _commandLine;
+
+        private Utils.Scheduler _userSaveScheduler;
+        private Utils.Scheduler _recordsSaveScheduler;
 
         public Server()
         {
@@ -24,10 +29,15 @@ namespace Server
             _handlers.AddHandler(new UserHandler());
             _handlers.AddHandler(new SpyHandler());
 
+            _commandLine = new ServerCommandLine.ServerCommandLine();
+
             Task.Run(async () => {
-                await DataWriterReader.LoadUsersAsync("users.json");
                 await DataWriterReader.LoadRecordsAsync("records.json");
-            });
+                await DataWriterReader.LoadUsersAsync("users.json");
+            }).Wait();
+
+            _userSaveScheduler = new Utils.Scheduler(async () => await DataWriterReader.SaveUsersToFile(), new TimeSpan(0, 2, 0));
+            _recordsSaveScheduler = new Utils.Scheduler(async () => await DataWriterReader.SaveRecordsToFile(), new TimeSpan(0, 2, 0));
         }
 
         private void StartTerminalMenu()
@@ -39,32 +49,9 @@ namespace Server
                     ConsoleKeyInfo input_key = Console.ReadKey();
                     if (input_key.Key != ConsoleKey.Enter)
                         continue;
-                    Console.WriteLine("Hello admin!");
+                   
                     _logger.DisableConsoleOutput();
-
-                    bool terminalWork = true;
-                    while (terminalWork)
-                    {
-                        Console.Write(": ");
-                        string? input = Console.ReadLine();
-                        if (input == null)
-                            continue;
-
-                        switch (input)
-                        {
-                            case "help":
-                                Console.WriteLine("");
-                                break;
-                            case "exit":
-                                terminalWork = false;
-                                break;
-                            default:
-                                Console.WriteLine("Inknown command! Exter help to get commands list");
-                                break;
-                        }
-
-
-                    }
+                    _commandLine.Start();
                     _logger.EnableConsoleOutput();
                 }
             });
@@ -76,6 +63,9 @@ namespace Server
             try
             {
                 StartTerminalMenu();
+
+                _userSaveScheduler.Run();
+                _recordsSaveScheduler.Run();
 
                 _listener.Start();
                 Console.WriteLine("Wait for connection (type Enter for activate server interface)...");
@@ -98,6 +88,9 @@ namespace Server
             {
                 if (_listener != null)
                     _listener.Stop();
+
+                _userSaveScheduler.Stop();
+                _recordsSaveScheduler.Stop();
             }
         }
     

