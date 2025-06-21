@@ -46,7 +46,7 @@ namespace Server.ServerCommandLine
 
             Task.Run(async () =>
             {
-                bool result = await UsersContainer.AddUserAsync(options[0], options[1]);
+                bool result = await UsersContainer.DeleteUserAsync(options[0]);
                 if (result)
                 {
                     Console.WriteLine($"User '{options[0]}' added successfully.");
