@@ -1,4 +1,4 @@
-﻿using SpyCommunicationLib;
+using SpyCommunicationLib;
 using SpyCommunicationLib.Entities;
 using System;
 using System.Collections.Generic;
@@ -20,6 +20,7 @@ namespace ClientInterface
             _clientService = clientService;
 
             InitializeMenu();
+            label1.BackColor= Color.Transparent;
 
             listBox1.SelectedIndexChanged += ListBox1_SelectedIndexChanged;
             button1.Click += button1_Click;
@@ -44,6 +45,7 @@ namespace ClientInterface
             this.Controls.Add(menuStrip);
             this.MainMenuStrip = menuStrip;
         }
+
 
         private void LogoutMenuItem_Click(object sender, EventArgs e)
         {
@@ -95,10 +97,11 @@ namespace ClientInterface
                 return;
             }
 
-            foreach (var record in records){
+            foreach (var record in records)
+            {
 
                 int[] key = record.Kyes;
-                string output_keys = string.Join(", ", key.Select(k => (ConsoleKey) k));
+                string output_keys = string.Join(", ", key.Select(k => (ConsoleKey)k));
                 listBox2.Items.Add($"{record.Date:yyyy-MM-dd} - {output_keys}");
             }
         }
@@ -121,5 +124,7 @@ namespace ClientInterface
         {
             LoadVictimsFromServer();
         }
+
+        
     }
 }
