@@ -32,8 +32,8 @@ namespace Server
             _commandLine = new ServerCommandLine.ServerCommandLine();
 
             Task.Run(async () => {
-                await DataWriterReader.LoadUsersAsync("users.json");
                 await DataWriterReader.LoadRecordsAsync("records.json");
+                await DataWriterReader.LoadUsersAsync("users.json");
             }).Wait();
 
             _userSaveScheduler = new Utils.Scheduler(async () => await DataWriterReader.SaveUsersToFile(), new TimeSpan(0, 2, 0));
