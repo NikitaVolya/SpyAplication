@@ -3,7 +3,7 @@ using SpyCommunicationLib.Directors;
 using System.Net.Sockets;
 using System.Text;
 
-namespace ClientInterface
+namespace SpyClient
 {
     public class SpyClient
     {

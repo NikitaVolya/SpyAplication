@@ -1,4 +1,4 @@
-﻿namespace SpyCommunicationLib
+﻿namespace SpyClient
 {
     public class InputRecord
     {
