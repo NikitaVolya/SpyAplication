@@ -5,6 +5,7 @@ using Server.Data;
 
 namespace Server
 {
+
     internal class Server
     {
 
@@ -13,6 +14,7 @@ namespace Server
         private Logger _logger;
 
         private HandlersContainer _handlers;
+        private ServerCommandLine.ServerCommandLine _commandLine;
 
         public Server()
         {
@@ -23,6 +25,8 @@ namespace Server
             _handlers = new HandlersContainer();
             _handlers.AddHandler(new UserHandler());
             _handlers.AddHandler(new SpyHandler());
+
+            _commandLine = new ServerCommandLine.ServerCommandLine();
 
             Task.Run(async () => {
                 await DataWriterReader.LoadUsersAsync("users.json");
@@ -39,32 +43,9 @@ namespace Server
                     ConsoleKeyInfo input_key = Console.ReadKey();
                     if (input_key.Key != ConsoleKey.Enter)
                         continue;
-                    Console.WriteLine("Hello admin!");
+                   
                     _logger.DisableConsoleOutput();
-
-                    bool terminalWork = true;
-                    while (terminalWork)
-                    {
-                        Console.Write(": ");
-                        string? input = Console.ReadLine();
-                        if (input == null)
-                            continue;
-
-                        switch (input)
-                        {
-                            case "help":
-                                Console.WriteLine("");
-                                break;
-                            case "exit":
-                                terminalWork = false;
-                                break;
-                            default:
-                                Console.WriteLine("Inknown command! Exter help to get commands list");
-                                break;
-                        }
-
-
-                    }
+                    _commandLine.Start();
                     _logger.EnableConsoleOutput();
                 }
             });

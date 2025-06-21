@@ -13,6 +13,7 @@ namespace Server.Data
             List<UserData> users = UsersContainer.GetUsersList();
 
             string json = JsonSerializer.Serialize(users, new JsonSerializerOptions { IncludeFields = true });
+            
             await File.WriteAllTextAsync(filename, json);
         }
 

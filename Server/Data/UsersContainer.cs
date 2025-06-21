@@ -51,6 +51,15 @@ namespace Server.Data
             });
         }
 
+        public static async Task<bool> DeleteUserAsync(string username)
+        {
+            UserData? userData = GetUserOrDefault(username);
+            if (userData == null)
+                return false;
+            _users.Remove(userData);
+            return true;
+        }
+
         public static async Task<bool> AddUserAsync(UserData userData)
         {
             if (string.IsNullOrEmpty(userData.Username) || string.IsNullOrEmpty(userData.Password))
@@ -61,8 +70,6 @@ namespace Server.Data
 
             lock (_locker)
                 _users.Add(userData);
-
-            await DataWriterReader.SaveUsersToFile();
 
             return true;
         }
