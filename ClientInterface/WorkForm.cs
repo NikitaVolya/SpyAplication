@@ -1,4 +1,4 @@
-﻿using SpyCommunicationLib;
+using SpyCommunicationLib;
 using SpyCommunicationLib.Entities;
 using System;
 using System.Collections.Generic;
