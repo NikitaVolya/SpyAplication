@@ -3,7 +3,7 @@
     /// <summary>
     /// Builds a SpyMessage with sender, token, action, and options.
     /// </summary>
-    internal class AppMessageBuilder : ITokenMessageBuilder, IMessageBuilder
+    internal class AppMessageBuilder : IMessageBuilder
     {
         /// <summary>
         /// The internal message being constructed.
@@ -24,15 +24,6 @@
         public virtual void SetSender()
         {
             // To be implemented in derived classes
-        }
-
-        /// <summary>
-        /// Sets the authentication token for the message.
-        /// </summary>
-        /// <param name="token">The token to assign.</param>
-        public void SetToken(string token)
-        {
-            _message.Token = token;
         }
 
         /// <summary>
@@ -61,6 +52,11 @@
         {
             foreach (var option in options)
                 _message.Add(option.Key, option.Value);
+        }
+
+        public void SetOption(string key, string value)
+        {
+            _message.Add(key, value);
         }
 
         /// <summary>

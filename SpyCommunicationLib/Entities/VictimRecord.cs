@@ -12,11 +12,6 @@ namespace SpyCommunicationLib.Entities
         public int Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the victim's identifier.
-        /// </summary>
-        public string VictimId { get; set; }
-
-        /// <summary>
         /// Gets or sets the victim's IP address.
         /// </summary>
         public string VictimIp { get; set; }

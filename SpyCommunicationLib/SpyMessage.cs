@@ -11,7 +11,6 @@ namespace SpyCommunicationLib
         Empty,
         Spy,
         User,
-        Administrator,
     }
 
     /// <summary>
@@ -23,11 +22,7 @@ namespace SpyCommunicationLib
         SendData = 001,
         Login = 101,
         GetVictimsIpList = 102,
-        GetVictimRecords = 103,
-        ChangePassword = 104,
-        CheckAdminStatus = 105,
-        GetAllUsers = 201,
-        DeleteVictimRecord = 202,
+        GetVictimRecords = 103
     }
 
     /// <summary>
@@ -36,29 +31,15 @@ namespace SpyCommunicationLib
     public class SpyMessage
     {
 
-        private string? _token;
         private MessageAction? _action;
         public Sender _sender;
         private Dictionary<string, string> _options;
 
         public SpyMessage()
         {
-            _token = null;
             _action = null;
             _sender = Sender.Empty;
             _options = new Dictionary<string, string>();
-        }
-
-        /// <summary>
-        /// Gets or sets the authentication token.
-        /// </summary>
-        public string Token
-        {
-            get => _token ?? string.Empty;
-            set
-            {
-                _token = value;
-            }
         }
 
         /// <summary>
@@ -87,16 +68,6 @@ namespace SpyCommunicationLib
                 _action = value;
             }
         }
-
-        /// <summary>
-        /// Indicates whether the message contains a token.
-        /// </summary>
-        [JsonIgnore]
-        public bool ContainToken
-        {
-            get => !string.IsNullOrEmpty(_token);
-        }
-
 
 
         /// <summary>
