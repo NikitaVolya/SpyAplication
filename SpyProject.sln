@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpyCommunicationLib", "SpyC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csproj", "{3526757B-65E8-4A40-B543-9AB93CBE15F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManualSender", "ManualSender\ManualSender.csproj", "{1716729E-16DD-42CD-8AA9-8860FD10595B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "spy-client", "spy-client\spy-client.csproj", "{E16B4550-8FE8-44D0-8681-C2604DDBC917}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
