@@ -1,6 +1,7 @@
 ﻿using SpyCommunicationLib;
 using System.Drawing;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ClientInterface
 {
@@ -27,7 +28,12 @@ namespace ClientInterface
                 return;
             }
 
-            if (username == "admin" && password == "admin123")
+            resultLabel.ForeColor = Color.DarkOrange;
+            resultLabel.Text = "Connecting...";
+
+            bool success = await _clientService.LoginAsync(username, password);
+
+            if (success)
             {
                 resultLabel.ForeColor = Color.Green;
                 resultLabel.Text = "Successfully logged in!";
@@ -38,8 +44,9 @@ namespace ClientInterface
             else
             {
                 resultLabel.ForeColor = Color.Red;
-                resultLabel.Text = "Incorrect username or password!";
+                resultLabel.Text = "Login failed. Try again.";
             }
         }
+
     }
 }

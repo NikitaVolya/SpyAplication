@@ -38,6 +38,10 @@ namespace ClientInterface
             button2 = new Button();
             button3 = new Button();
             textBox1 = new TextBox();
+            button5 = new Button();
+            label1 = new Label();
+            button6 = new Button();
+            label2 = new Label();
             SuspendLayout();
             // 
             // listBox1
@@ -62,7 +66,7 @@ namespace ClientInterface
             button1.Name = "button1";
             button1.Size = new Size(94, 29);
             button1.TabIndex = 2;
-            button1.Text = "Пошук";
+            button1.Text = "Search";
             button1.UseVisualStyleBackColor = true;
             // 
             // button2
@@ -71,7 +75,7 @@ namespace ClientInterface
             button2.Name = "button2";
             button2.Size = new Size(178, 29);
             button2.TabIndex = 3;
-            button2.Text = "Оновити";
+            button2.Text = "Update victims";
             button2.UseVisualStyleBackColor = true;
             // 
             // button3
@@ -80,7 +84,7 @@ namespace ClientInterface
             button3.Name = "button3";
             button3.Size = new Size(448, 29);
             button3.TabIndex = 4;
-            button3.Text = "Видалити";
+            button3.Text = "Update records";
             button3.UseVisualStyleBackColor = true;
             // 
             // textBox1
@@ -90,17 +94,66 @@ namespace ClientInterface
             textBox1.Size = new Size(348, 27);
             textBox1.TabIndex = 5;
             // 
+            // button5
+            // 
+            button5.Enabled = false;
+            button5.FlatStyle = FlatStyle.System;
+            button5.Location = new Point(15, 46);
+            button5.Name = "button5";
+            button5.Size = new Size(214, 396);
+            button5.TabIndex = 7;
+            button5.Tag = "0";
+            button5.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.BackColor = Color.White;
+            label1.Font = new System.Drawing.Font("Sylfaen", 12F);
+            label1.Location = new Point(32, 34);
+            label1.Name = "label1";
+            label1.Size = new Size(79, 26);
+            label1.TabIndex = 9;
+            label1.Text = "Victims";
+            // 
+            // button6
+            // 
+            button6.Enabled = false;
+            button6.FlatStyle = FlatStyle.System;
+            button6.Location = new Point(284, 46);
+            button6.Name = "button6";
+            button6.Size = new Size(482, 396);
+            button6.TabIndex = 10;
+            button6.Tag = "0";
+            button6.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.BackColor = Color.White;
+            label2.Font = new System.Drawing.Font("Sylfaen", 12F);
+            label2.Location = new Point(303, 34);
+            label2.Name = "label2";
+            label2.Size = new Size(180, 26);
+            label2.TabIndex = 11;
+            label2.Text = "Search information";
+            // 
             // WorkForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(800, 469);
+            Controls.Add(label2);
+            Controls.Add(label1);
             Controls.Add(textBox1);
             Controls.Add(button3);
             Controls.Add(button2);
             Controls.Add(button1);
             Controls.Add(listBox2);
             Controls.Add(listBox1);
+            Controls.Add(button5);
+            Controls.Add(button6);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
             Name = "WorkForm";
             Text = "WorkForm";
             ResumeLayout(false);
@@ -115,5 +168,9 @@ namespace ClientInterface
         private Button button2;
         private Button button3;
         private TextBox textBox1;
+        private Button button5;
+        private Label label1;
+        private Button button6;
+        private Label label2;
     }
 }
