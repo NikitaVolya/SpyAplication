@@ -95,8 +95,12 @@ namespace ClientInterface
                 return;
             }
 
-            foreach (var record in records)
-                listBox2.Items.Add($"{record.Date:yyyy-MM-dd} - {record.Text}");
+            foreach (var record in records){
+
+                int[] key = record.Kyes;
+                string output_keys = string.Join(", ", key.Select(k => (ConsoleKey) k));
+                listBox2.Items.Add($"{record.Date:yyyy-MM-dd} - {output_keys}");
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
