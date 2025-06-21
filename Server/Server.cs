@@ -16,6 +16,9 @@ namespace Server
         private HandlersContainer _handlers;
         private ServerCommandLine.ServerCommandLine _commandLine;
 
+        private Utils.Scheduler _userSaveScheduler;
+        private Utils.Scheduler _recordsSaveScheduler;
+
         public Server()
         {
             _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), _port);
@@ -31,7 +34,10 @@ namespace Server
             Task.Run(async () => {
                 await DataWriterReader.LoadUsersAsync("users.json");
                 await DataWriterReader.LoadRecordsAsync("records.json");
-            });
+            }).Wait();
+
+            _userSaveScheduler = new Utils.Scheduler(async () => await DataWriterReader.SaveUsersToFile(), new TimeSpan(0, 2, 0));
+            _recordsSaveScheduler = new Utils.Scheduler(async () => await DataWriterReader.SaveRecordsToFile(), new TimeSpan(0, 2, 0));
         }
 
         private void StartTerminalMenu()
@@ -58,6 +64,9 @@ namespace Server
             {
                 StartTerminalMenu();
 
+                _userSaveScheduler.Run();
+                _recordsSaveScheduler.Run();
+
                 _listener.Start();
                 Console.WriteLine("Wait for connection (type Enter for activate server interface)...");
 
@@ -79,6 +88,9 @@ namespace Server
             {
                 if (_listener != null)
                     _listener.Stop();
+
+                _userSaveScheduler.Stop();
+                _recordsSaveScheduler.Stop();
             }
         }
     

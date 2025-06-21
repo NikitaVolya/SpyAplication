@@ -8,6 +8,16 @@ namespace Server.Data
     {
         private static object _locker = new();
 
+        private static async Task<string?> LoadFromFileAsync(string filename)
+        {
+            if (!File.Exists(filename))
+            {
+                Console.WriteLine($"File {filename} not found, creating a new one.");
+                return null;
+            }
+            return await File.ReadAllTextAsync(filename);
+        }
+
         public static async Task SaveUsersToFile(string filename = "users.json")
         {
             List<UserData> users = UsersContainer.GetUsersList();
@@ -17,15 +27,6 @@ namespace Server.Data
             await File.WriteAllTextAsync(filename, json);
         }
 
-        private static async Task<string?> LoadFromFile(string filename)
-        {
-            if (!File.Exists(filename))
-            {
-                Console.WriteLine($"File {filename} not found, creating a new one.");
-                return null;
-            }
-            return await File.ReadAllTextAsync(filename);
-        }
 
         public static async Task SaveRecordsToFile(string filename = "records.json")
         {
@@ -38,7 +39,7 @@ namespace Server.Data
         public static async Task LoadUsersAsync(string filename = "users.json")
         {
 
-            string? json = await LoadFromFile(filename);
+            string? json = await LoadFromFileAsync(filename);
             if (json == null || json == string.Empty)
                 return;
 
@@ -54,7 +55,7 @@ namespace Server.Data
 
         public static async Task LoadRecordsAsync(string filename = "records.json")
         {
-            string? json = await LoadFromFile(filename);
+            string? json = await LoadFromFileAsync(filename);
             if (json == null || json == string.Empty)
                 return;
 

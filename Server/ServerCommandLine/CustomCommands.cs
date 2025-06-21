@@ -49,7 +49,7 @@ namespace Server.ServerCommandLine
                 bool result = await UsersContainer.DeleteUserAsync(options[0]);
                 if (result)
                 {
-                    Console.WriteLine($"User '{options[0]}' added successfully.");
+                    Console.WriteLine($"User '{options[0]}' deleted successfully.");
                 }
                 else
                 {
