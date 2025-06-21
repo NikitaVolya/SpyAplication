@@ -20,7 +20,6 @@ namespace ClientInterface
             _clientService = clientService;
 
             InitializeMenu();
-            label1.BackColor= Color.Transparent;
 
             listBox1.SelectedIndexChanged += ListBox1_SelectedIndexChanged;
             button1.Click += button1_Click;
